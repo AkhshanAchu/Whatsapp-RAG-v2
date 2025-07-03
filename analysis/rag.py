@@ -397,7 +397,7 @@ class TanglishChatRAG:
         
         # Sort by final score and return top_k
         final_results.sort(key=lambda x: x.score, reverse=True)
-        return final_results[:top_k]
+        return final_results[:top_k+top_k]
     
     def get_user_messages(self, username: str, limit: int = 10) -> List[ChatResult]:
         """Get recent messages from a specific user"""
