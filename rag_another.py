@@ -322,7 +322,7 @@ class TanglishChatRAG:
         
         return results
     
-    def combined_search_optimized(self, query: str, top_k: int = 15, **kwargs) -> List[ChatResult]:
+    def best_search_optimized(self, query: str, top_k: int = 15, **kwargs) -> List[ChatResult]:
         """Optimized combined search with parallel processing"""
         if not query.strip():
             return []
@@ -391,7 +391,7 @@ class TanglishChatRAG:
         
         # Sort and return top results
         final_results.sort(key=lambda x: x.score, reverse=True)
-        return final_results[:top_k+top_k]
+        return final_results[:top_k]
     
     def get_user_messages(self, username: str, limit: int = 10) -> List[ChatResult]:
         """Optimized user message retrieval"""
@@ -491,7 +491,7 @@ def performance_test():
     start_time = time.time()
     results = rag.best_search_optimized("hello world", top_k=10)
     search_time = time.time() - start_time
-    
+    print(results)
     print(f"Search time: {search_time:.3f} seconds")
     print(f"Found {len(results)} results")
     

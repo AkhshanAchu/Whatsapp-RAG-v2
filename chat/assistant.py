@@ -11,14 +11,13 @@ class ChatRAGAssistant:
         
         # Available functions for the RAG system
         self.available_functions = {
-            "best_search": self.chat_rag.best_search,
-            "get_emotion_similarity": self.chat_rag.get_emotion_similarity,
+            "combined_search_optimized": self.chat_rag.combined_search_optimized,
             "semantic_search_optimized": self.chat_rag.semantic_search_optimized,
-            "keyword_search": self.chat_rag.keyword_search,
-            "stats_search": self.chat_rag.stats_search,
+            "keyword_search_optimized": self.chat_rag.keyword_search_optimized,
+            "get_stats": self.chat_rag.get_stats,
             "get_user_messages": self.chat_rag.get_user_messages,
             "get_recent_messages": self.chat_rag.get_recent_messages,
-            "batch_text_similarity_search": self.chat_rag.batch_text_similarity_search
+            "tfidf_search_optimized": self.chat_rag.tfidf_search_optimized
         }
         
         # Setup minimal logging
@@ -74,91 +73,93 @@ class ChatRAGAssistant:
         """Define available functions for the LLM"""
         return [
             {
-                "name": "best_search",
-                "description": "Search for relevant messages using hybrid search. Use for finding specific topics, events, fights, discussions, etc.",
+                "name": "Combined_search_optimized",
+                "description": "Advanced hybrid search combining semantic, keyword, and TF-IDF methods with parallel processing. Best for finding specific topics, events, fights, discussions, etc. but computationallly expensive. **USE WHEN UNCERTAIN**",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "query": {"type": "string", "description": "Search query"},
-                        "top_k": {"type": "integer", "description": "Number of results", "default": 8}
+                        "top_k": {"type": "integer", "description": "Number of results", "default": 15}
                     },
                     "required": ["query"]
                 }
             },
-            # {
-            #     "name": "get_emotion_similarity",
-            #     "description": "Find messages with similar emotional tone",
-            #     "parameters": {
-            #         "type": "object",
-            #         "properties": {
-            #             "query": {"type": "string", "description": "Text to analyze for emotions"}
-            #         },
-            #         "required": ["query"]
-            #     }
-            # },
             {
                 "name": "semantic_search_optimized",
-                "description": "Find messages with similar meaning using semantic search",
+                "description": "Ultra-fast semantic search using precomputed embeddings. Find messages with similar meaning and context.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "query": {"type": "string", "description": "Concept to search for"},
-                        "top_k": {"type": "integer", "description": "Number of results", "default": 8}
+                        "query": {"type": "string", "description": "Concept or phrase to search for semantically"},
+                        "top_k": {"type": "integer", "description": "Number of results", "default": 15}
                     },
                     "required": ["query"]
                 }
             },
             {
-                "name": "keyword_search",
-                "description": "Search for messages containing specific keywords",
+                "name": "keyword_search_optimized",
+                "description": "Optimized keyword search with exact and partial matching. Fast for finding specific words or phrases.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "keywords": {"type": "array", "items": {"type": "string"}, "description": "Keywords to search"},
-                        "top_k": {"type": "integer", "description": "Number of results", "default": 8}
+                        "keywords": {
+                            "oneOf": [
+                                {"type": "string", "description": "Space-separated keywords"},
+                                {"type": "array", "items": {"type": "string"}, "description": "List of keywords"}
+                            ],
+                            "description": "Keywords to search for"
+                        },
+                        "top_k": {"type": "integer", "description": "Number of results", "default": 15}
                     },
                     "required": ["keywords"]
                 }
             },
             {
-                "name": "get_user_messages",
-                "description": "Get messages from a specific user",
+                "name": "tfidf_search_optimized",
+                "description": "Fast TF-IDF search for finding documents with relevant term frequencies. Good for longer queries.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "username": {"type": "string", "description": "Username"},
-                        "limit": {"type": "integer", "description": "Number of messages", "default": 10}
+                        "query": {"type": "string", "description": "Query text for TF-IDF search"},
+                        "top_k": {"type": "integer", "description": "Number of results", "default": 15}
+                    },
+                    "required": ["query"]
+                }
+            },
+            {
+                "name": "get_user_messages",
+                "description": "Get messages from a specific user with optimized retrieval",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "username": {"type": "string", "description": "Username to search for"},
+                        "limit": {"type": "integer", "description": "Number of messages to retrieve", "default": 10}
                     },
                     "required": ["username"]
                 }
             },
             {
                 "name": "get_recent_messages",
-                "description": "Get recent messages from the last N hours",
+                "description": "Get recent messages from the last N hours with optimized filtering",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "hours": {"type": "integer", "description": "Hours to look back"},
-                        "limit": {"type": "integer", "description": "Number of messages", "default": 15}
+                        "hours": {"type": "integer", "description": "Hours to look back from current time"},
+                        "limit": {"type": "integer", "description": "Number of messages to retrieve", "default": 10}
                     },
                     "required": ["hours"]
                 }
             },
             {
-                "name": "batch_text_similarity_search",
-                "description": "Find messages with similar text content using embedding-based similarity. Uses emotion-aware embeddings for better matching.",
+                "name": "get_stats",
+                "description": "Get comprehensive dataset statistics including message counts, users, date ranges, and common words",
                 "parameters": {
                     "type": "object",
-                    "properties": {
-                        "query": {"type": "string", "description": "Text to find similar messages for"},
-                        "top_k": {"type": "integer", "description": "Number of results", "default": 15},
-                        "column_name": {"type": "string", "description": "Embedding column to use", "default": "final_score"}
-                    },
-                    "required": ["query"]
+                    "properties": {},
+                    "required": []
                 }
-            }
+            },
         ]
-
     def create_system_prompt(self) -> str:
         """Create system prompt for function calling with DeepSeek-specific instructions"""
         functions_json = json.dumps(self.get_function_definitions(), indent=2)
@@ -221,9 +222,6 @@ After getting function results, provide a natural, helpful answer based on the d
         # Step 2: Check if it's a function call (with DeepSeek handling)
         function_call_data = self.extract_json_from_response(assistant_response)
 
-        print("_"*50)
-        print(function_call_data)
-        print("_"*50)
         
         if function_call_data and 'function_call' in function_call_data:
             # Execute the function
