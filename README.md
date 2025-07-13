@@ -1,7 +1,7 @@
-# WhatsApp Chat RAG System v2
+# WhatsApp Chat RAG System v2 (Semantic and Emotional)
 
-A  Retrieval-Augmented Generation (RAG) system for analyzing WhatsApp chat data with support for Tamil-English (Tanglish) conversations. This system combines multiple search methodologies with an LLM assistant to provide intelligent chat analysis and insights.
 
+A  Retrieval-Augmented Generation (RAG) system for analyzing WhatsApp chat data with support for Tamil-English (Tanglish) conversations with **Semantic and Emotional Embeddings**. This system combines multiple search methodologies with an LLM assistant to provide intelligent chat analysis and insights.
 ## Features
 
 ### Search Capabilities
