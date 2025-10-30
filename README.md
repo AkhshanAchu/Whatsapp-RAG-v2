@@ -1,4 +1,9 @@
-# WhatsApp Chat RAG System v2 (Semantic and Emotional)
+# 💬WhatsApp Chat RAG System v2 (Semantic and Emotional)
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
+![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-ff4b4b.svg)
+![Ollama](https://img.shields.io/badge/LLM-Ollama-blueviolet)
+
 
 
 A  Retrieval-Augmented Generation (RAG) system for analyzing WhatsApp chat data with support for Tamil-English (Tanglish) conversations with **Semantic and Emotional Embeddings**. This system combines multiple search methodologies with an LLM assistant to provide intelligent chat analysis and insights.
