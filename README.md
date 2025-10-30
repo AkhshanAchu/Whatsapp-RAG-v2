@@ -60,7 +60,13 @@ ollama pull deepseek-r1:8b
 ```bash
 python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('vader_lexicon')"
 ```
+##  Sample Visualizations
 
+| Message Distribution | User Activity Over Days |
+|----------------------|-------------------------|
+| ![msg_dist](message.png) | ![user_activity](individual.png) |
+
+---
 ## Quick Start
 
 ### 1. Prepare Your Chat Data
