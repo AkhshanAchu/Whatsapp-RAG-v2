@@ -196,7 +196,4 @@ chat_rag = TanglishChatRAG(df=df, cache_dir="./custom_cache")
 - `seaborn` - Statistical plots
 - `wordcloud` - Word cloud generation
 
-
-**Note**: This system is designed for personal use with your own chat data. Ensure you have proper permissions before analyzing any chat conversations.
-
 **Made with ❤️ NiceGuy**
